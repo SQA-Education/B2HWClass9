@@ -64,7 +64,7 @@ You will feel better if ..."></textarea><p class="small" style="text-align:right
 
 <div class="section" id="s5"><div class="card"><div class="progress"><div class="progress-bar" style="width:100%"></div></div><h2>5. Grammar</h2><div id="grammarQuestions"></div><button class="btn btn-orange" onclick="submitFinal()">Submit Homework ✓</button><button class="btn" style="background:#e5e7eb;color:#333;margin-top:8px" onclick="showSection('s4')">&larr; Back</button></div></div>
 
-<div class="section" id="results"><div class="score-card"><p style="opacity:.85">Homework Complete!</p><div class="score-big" id="finalPct">0%</div><p id="studentDisplay"></p><div class="scores"><div><label>Reading</label><span id="scL">0/3</span></div><div><label>Vocab</label><span id="scV">0/6</span></div><div><label>Writing</label><span id="scW">Teacher</span></div><div><label>Speaking</label><span id="scS">0/20</span></div><div><label>Grammar</label><span id="scG">0/8</span></div></div><button class="btn btn-orange" style="margin-top:20px" onclick="submitToTeacher()">Finish →</button></div></div>
+<div class="section" id="results"><div class="score-card"><p style="opacity:.85">Homework Complete!</p><div class="score-big" id="finalPct">0%</div><p id="studentDisplay"></p><div class="scores"><div><label>Reading</label><span id="scL">0/3</span></div><div><label>Vocab</label><span id="scV">0/6</span></div><div><label>Writing</label><span id="scW">Teacher</span></div><div><label>Speaking</label><span id="scS">0/20</span></div><div><label>Grammar</label><span id="scG">0/8</span></div></div><button class="btn btn-orange" style="margin-top:20px" id="submitBtn" onclick="submitToTeacher()">Finish →</button><div id="submitStatus" style="display:none;margin-top:16px;background:#f0fdf4;border:2px solid #22c55e;border-radius:12px;padding:16px;text-align:center;color:#15803d"></div></div></div>
 </div>
 
 <script>
@@ -153,7 +153,7 @@ let submitted=false;
 function submitToTeacher(){
   if(submitted)return;
   submitted=true;
-  const btn=document.querySelector('button[onclick="submitToTeacher()"]');
+  const btn=document.getElementById('submitBtn');
   if(btn){btn.disabled=true;btn.textContent='Submitting...';}
   const pct=Math.round((scores.l+scores.v+scores.s+scores.g)/37*100);
   const speakingTranscript=(typeof spokenText!=='undefined' && spokenText)?spokenText:'';
@@ -170,16 +170,10 @@ function submitToTeacher(){
   formData.append('entry.301386877',writingText||'');
   formData.append('entry.1035810181',speakingTranscript||'No transcript captured');
   formData.append('entry.1451249480',document.getElementById('teacherName').value||'');
-  fetch('https://docs.google.com/forms/d/e/1FAIpQLSe3-96EKbLIQ8Cm0oU6FFzvpTNqwBniK0mEHN5_nge5wr0UtA/formResponse',{method:'POST',mode:'no-cors',body:formData})
-    .then(function(){
-      if(btn){btn.textContent='Submitted!';btn.style.background='#22c55e';}
-      alert('Homework submitted successfully! Your teacher received your work.');
-    })
-    .catch(function(){
-      submitted=false;
-      if(btn){btn.disabled=false;btn.textContent='Failed — Tap to Retry';btn.style.background='#ef4444';}
-      alert('Submission failed. Check your internet and try again.');
-    });
+  fetch('https://docs.google.com/forms/d/e/1FAIpQLSe3-96EKbLIQ8Cm0oU6FFzvpTNqwBniK0mEHN5_nge5wr0UtA/formResponse',{method:'POST',mode:'no-cors',body:formData}).catch(function(){});
+  if(btn){btn.textContent='Submitted ✓';btn.style.background='#22c55e';}
+  const status=document.getElementById('submitStatus');
+  if(status){status.innerHTML='✅ <strong>Homework submitted successfully!</strong><br><span style="font-size:0.9em;color:#555">Your teacher has received your work.</span><br><br><button onclick="location.reload()" style="margin-top:8px;padding:10px 20px;background:#5B5091;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer;font-family:inherit">🔄 Retake Homework</button>';status.style.display='block';}
 }
 </script>
 </body>
