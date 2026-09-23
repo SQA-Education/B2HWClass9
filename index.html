@@ -110,12 +110,10 @@ function startRec(){
   speechRec.continuous=false;
   speechRec.interimResults=true;
   speechRec.lang='en-US';
-  speechRec.onresult=function(e){
+  speechRecvar __committed=(typeof spokenText!=='undefined'?spokenText:'')||'';
+.onresult=function(e){
     let interim='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal)spokenText+=e.results[i][0].transcript+' ';
-      else interim+=e.results[i][0].transcript;
-    }
+    var __f='';for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal)__f+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript+' ';}spokenText=(__committed+' '+__f).replace(/\s+/g,' ').trim();
     const t=(spokenText+interim).trim();
     if(t&&box){box.textContent='Transcript: '+t;box.classList.remove('hidden');}
   };
@@ -130,7 +128,7 @@ function startRec(){
       document.getElementById('recStatus').textContent='Error: '+ev.error+' — tap to try again.';
     }
   };
-  speechRec.onend=function(){
+  speechRec.onend=function(){__committed=spokenText;
     if(isRec){try{speechRec.start();}catch(e){}}
   };
   try{speechRec.start();}catch(e){
