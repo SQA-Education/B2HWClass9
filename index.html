@@ -110,8 +110,7 @@ function startRec(){
   speechRec.continuous=false;
   speechRec.interimResults=true;
   speechRec.lang='en-US';
-  speechRecvar __committed=(typeof spokenText!=='undefined'?spokenText:'')||'';
-.onresult=function(e){
+  var __committed=(typeof spokenText!=='undefined'?spokenText:'')||''; speechRec.onresult=function(e){
     let interim='';
     var __f='';for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal)__f+=e.results[i][0].transcript+' ';else interim+=e.results[i][0].transcript+' ';}spokenText=(__committed+' '+__f).replace(/\s+/g,' ').trim();
     const t=(spokenText+interim).trim();
